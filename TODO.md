@@ -23,3 +23,12 @@ Estimate: an afternoon (2--4 hours), mostly dependency swaps and restart-and-rea
 2. Set `"disable_plugin_host_3.3": true`, restart Sublime, and read the traceback in the console (`ctrl+backtick`). Fix, restart, repeat.
 3. To get a working Mediawiker back mid-way, set the flag back to `false` and restart.
 4. When done, consider a PR upstream referencing #208 (upstream inactive since 2024-08), and remove the workaround from `Preferences.sublime-settings`.
+
+## Community adoption (after the 3.14 fix works)
+
+Upstream appears abandoned. The [SublimeText](https://github.com/SublimeText) GitHub org ("Collection of Sublime Text packages maintained by the community") adopts such packages. The process below is convention from memory, not written policy; confirm on their [Discord](https://discord.gg/D43Pecu) first.
+
+- [ ] Ask tosher (e.g., on #208) to transfer the repo to the SublimeText org or add maintainers. A transfer keeps issues, stars, and redirects.
+- [ ] If no response after a reasonable wait, ask on the Discord about forking into the org.
+- [ ] If forked rather than transferred, PR `wbond/package_control_channel` to change `"details": "https://github.com/tosher/Mediawiker"` in `repository/m.json` (line 1351 as of 2026-09-24) to the new repo.
+- [ ] Add the org repo as a remote in this clone (`jj git remote add community ...`).
