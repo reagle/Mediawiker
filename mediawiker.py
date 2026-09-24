@@ -205,9 +205,20 @@ class MediawikerShowPageCommand(sublime_plugin.TextCommand):
                 inherit_suffix=inherit_suffix
             )
 
+        # on reopen of the same page keep cursor and scroll, otherwise start at top
+        is_reopen = not self.new_tab and view.name() == self.title
+        old_sel = [(r.a, r.b) for r in view.sel()] if is_reopen else [(0, 0)]
+        old_viewport = view.viewport_position() if is_reopen else (0, 0)
+
         with utils.p.settings_hack('translate_tabs_to_spaces', False, disabled=not utils.props.get_setting('not_translate_tabs_on_page_open')):
             view.run_command(utils.cmd('insert_text'), {'position': 0, 'text': text, 'with_erase': True})
             view.run_command('detect_indentation')
+
+        size = view.size()
+        view.sel().clear()
+        for a, b in old_sel:
+            view.sel().add(sublime.Region(min(a, size), min(b, size)))
+        sublime.set_timeout(lambda: view.set_viewport_position(old_viewport, False), 0)
 
         if utils.props.get_site_setting(self.site_active, 'show_red_links'):
             utils.show_red_links(view, page)
@@ -359,6 +370,14 @@ class MediawikerPublishPageCommand(sublime_plugin.TextCommand):
         utils.status_message('{}.'.format(msg), replace_patterns=['[', ']'])
         utils.save_mypages(self.title)
         self.erase_summary_buffer()
+
+        # reload page to show server-side changes (signatures, substitutions, etc.)
+        if utils.props.get_setting('reopen_on_publish', False):
+            self.view.run_command(utils.cmd('show_page'), {
+                'title': self.title,
+                'new_tab': False,
+                'section': section
+            })
 
     def get_summary_buffer(self):
         if utils.props.get_setting('summary_save_on_fail'):

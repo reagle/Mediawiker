@@ -70,6 +70,7 @@
     "summary_prefix": "",
     "summary_postfix": " (by SublimeText.Mediawiker)",
     "skip_summary": false,
+    "reopen_on_publish": false,
     "clipboard_as_defaultpagename": false,
     "summary_save_on_fail": false,
     "newtab_ongetpage": true,
